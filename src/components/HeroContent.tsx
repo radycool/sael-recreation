@@ -2,12 +2,12 @@ import { useEffect, useRef } from 'react'
 import { BRAND_NAME } from './Nav'
 import { scrollState } from '../state/scrollState'
 
-// Kept in sync with Nav.tsx's own reveal window so the big hero
-// wordmark visually "lands" in the nav logo's spot right as the
-// nav bar crossfades in — one continuous morph, driven by scroll.
+// Kept in sync with Nav.tsx's own MOVE_END — the wordmark shrinks and
+// slides continuously (staying fully opaque the whole time, no fade)
+// until it settles exactly into the nav logo's spot. Nav.tsx then
+// snaps its own logo to visible at that same instant, so it reads as
+// the wordmark itself becoming the logo, not two elements crossfading.
 const MOVE_END = 0.7
-const FADE_START = 0.45
-const FADE_END = 0.7
 
 // Staggered, non-overlapping fade-out windows — each one is fully
 // gone before the next starts. Since this whole component is
@@ -56,10 +56,11 @@ export default function HeroContent() {
 
       if (wordmarkRef.current) {
         const moveT = Math.min(p / MOVE_END, 1)
-        const fadeT = Math.min(Math.max((p - FADE_START) / (FADE_END - FADE_START), 0), 1)
 
         // Slides + shrinks from the big hero position toward the
-        // nav bar's top-left logo spot (~48px / ~32px).
+        // nav bar's top-left logo spot (~48px / ~32px). Stays fully
+        // opaque the entire time — it settles into place rather than
+        // fading into a separate element.
         const translateX = moveT * -3 // vw
         const translateY = moveT * -15.5 // vh
         const scale = 1 - moveT * 0.88
@@ -67,7 +68,6 @@ export default function HeroContent() {
         wordmarkRef.current.style.transform =
           `translate(${translateX}vw, ${translateY}vh) scale(${scale})`
         wordmarkRef.current.style.transformOrigin = 'top left'
-        wordmarkRef.current.style.opacity = String(1 - fadeT)
       }
 
       if (scrollCueRef.current) scrollCueRef.current.style.opacity = String(fadeFor(p, FADES.scrollCue))

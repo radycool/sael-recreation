@@ -1,39 +1,55 @@
 import { useEffect, useRef } from 'react'
 import { scrollState } from '../state/scrollState'
-import { BRAND_NAME } from '../components/Nav'
 
-// Must match ScrollRig's FEATURE_* constants exactly — text visibility
-// and the earth's tumble/grow are two separate systems reading the
-// same scrollState, so they need the same windows to stay in sync.
-const TEXT_IN_END = 0.15
-const HOLD_END = 0.75
-const SETTLE_END = 0.95
+// How far off-screen each column starts/ends, in vh.
+const TRAVEL = 34
+
+// Opacity trapezoid: fades in over the first slice, fully visible
+// through the middle, fades out over the last slice — while position
+// keeps moving continuously across the WHOLE 0-1 range regardless,
+// so it never just sits still; it's always mid-scroll.
+const FADE_IN_END = 0.14
+const FADE_OUT_START = 0.86
+
+function motionFor(p: number, direction: 1 | -1) {
+  // direction +1 (left column): starts below (+TRAVEL) at p=0, passes
+  // through 0 at the midpoint, continues up and off (-TRAVEL) at p=1.
+  // direction -1 (right column): the mirror image — starts above.
+  const translateY = direction * TRAVEL * (1 - 2 * p)
+
+  let opacity: number
+  if (p < FADE_IN_END) {
+    opacity = p / FADE_IN_END
+  } else if (p < FADE_OUT_START) {
+    opacity = 1
+  } else {
+    opacity = 1 - Math.min((p - FADE_OUT_START) / (1 - FADE_OUT_START), 1)
+  }
+
+  return { translateY, opacity: Math.min(Math.max(opacity, 0), 1) }
+}
 
 export default function FeatureSection() {
-  const ref = useRef<HTMLDivElement>(null)
+  const leftRef = useRef<HTMLDivElement>(null)
+  const rightRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     let raf: number
     const update = () => {
-      if (ref.current) {
-        const isThis = scrollState.activeSection === 1
-        const p = isThis ? scrollState.sectionProgress : 0
+      const isThis = scrollState.activeSection === 1
+      const p = isThis ? scrollState.sectionProgress : 0
 
-        let opacity = 0
-        if (isThis) {
-          if (p < TEXT_IN_END) {
-            opacity = p / TEXT_IN_END
-          } else if (p < HOLD_END) {
-            // Fully visible and completely static through the whole
-            // tumble/grow — no repositioning, no re-fading, nothing
-            // overlapping while the earth does its thing.
-            opacity = 1
-          } else {
-            opacity = 1 - Math.min((p - HOLD_END) / (SETTLE_END - HOLD_END), 1)
-          }
-        }
-        ref.current.style.opacity = String(Math.min(Math.max(opacity, 0), 1))
+      if (leftRef.current) {
+        const { translateY, opacity } = motionFor(p, 1)
+        leftRef.current.style.transform = `translateY(${translateY}vh)`
+        leftRef.current.style.opacity = String(opacity)
       }
+      if (rightRef.current) {
+        const { translateY, opacity } = motionFor(p, -1)
+        rightRef.current.style.transform = `translateY(${translateY}vh)`
+        rightRef.current.style.opacity = String(opacity)
+      }
+
       raf = requestAnimationFrame(update)
     }
     update()
@@ -42,21 +58,18 @@ export default function FeatureSection() {
 
   return (
     <section className="section section--spin">
-      <div ref={ref} className="feature-sticky">
-        <div className="feature-sticky__left">
-          <h2>
-            ISN'T JUST
-            <br />
-            A DASHBOARD.
-          </h2>
+      <div className="feature-sticky">
+        <div className="feature-sticky__left" ref={leftRef}>
+          <h2>EMBRACING GREEN ENERGY FOR A SUSTAINABLE WORLD</h2>
         </div>
-        <div className="feature-sticky__right">
+        <div className="feature-sticky__right" ref={rightRef}>
           <p>
-            {BRAND_NAME} isn't just a monitoring tool. It's the result
-            of unprecedented AI breakthroughs.
+            With a plant first approach, we are making a sustainable
+            impact by propelling green energy solutions.
           </p>
         </div>
       </div>
     </section>
   )
 }
+

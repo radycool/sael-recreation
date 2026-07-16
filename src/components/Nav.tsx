@@ -3,14 +3,12 @@ import { scrollState } from '../state/scrollState'
 
 const BRAND_NAME = 'SAEL' // <-- swap this one constant to rename everywhere
 
-// Must match Hero.tsx's own timing — the small logo crossfades in
-// exactly as the shrinking hero wordmark "arrives" at this spot, so
-// the whole thing reads as one continuous morph rather than two
-// separate animations. The links, unlike the logo, are visible from
-// the very start (matching the ref) — only the logo needs to wait
-// for the wordmark to finish shrinking into its spot.
-const FADE_START = 0.45
-const FADE_END = 0.7
+// Must match HeroContent.tsx's MOVE_END exactly — the logo snaps to
+// visible at the precise instant the shrinking wordmark finishes
+// arriving at this spot. No crossfade: it's meant to read as the
+// wordmark itself settling into place and becoming the logo, not two
+// separate elements swapping.
+const MOVE_END = 0.7
 
 export default function Nav() {
   const logoRef = useRef<HTMLDivElement>(null)
@@ -21,16 +19,15 @@ export default function Nav() {
     const update = () => {
       const isHero = scrollState.activeSection === 0
       const p = isHero ? Math.min(Math.max(scrollState.sectionProgress, 0), 1) : 1
-      const t = Math.min(Math.max((p - FADE_START) / (FADE_END - FADE_START), 0), 1)
+      const arrived = p >= MOVE_END
 
       if (logoRef.current) {
-        logoRef.current.style.opacity = String(t)
-        logoRef.current.style.transform = `translateY(calc(-50% + ${(1 - t) * -12}px))`
+        logoRef.current.style.opacity = arrived ? '1' : '0'
       }
-      // Small placeholder dot holds the corner until the logo lands,
-      // then crossfades out — same handoff idea as the loading ring.
+      // Small placeholder dot holds the corner until the wordmark
+      // arrives, then disappears at that same instant.
       if (dotRef.current) {
-        dotRef.current.style.opacity = String(1 - t)
+        dotRef.current.style.opacity = arrived ? '0' : '1'
       }
       raf = requestAnimationFrame(update)
     }
