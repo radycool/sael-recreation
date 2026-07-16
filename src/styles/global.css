@@ -87,8 +87,6 @@ html, body, #root {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
-  gap: 16px;
   background: var(--bg);
   transition: opacity 0.7s ease;
   opacity: 1;
@@ -99,12 +97,24 @@ html, body, #root {
   pointer-events: none;
 }
 
+.loading-ring-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  /* The earth itself rests slightly below dead-center on screen (see
+     ScrollRig's BASE_POS_Y) — nudge the ring down to match so there's
+     no visible jump when this screen fades into the real scene. */
+  transform: translateY(5vh);
+}
+
 .loading-svg {
-  /* Same footprint as .viewfinder-frame svg — the loading ring should
-     sit exactly where the corner-bracket frame takes over once it's
-     gone, so it reads as "the same frame, tightening around the
-     earth" rather than two unrelated shapes. */
-  width: clamp(280px, 30vw, 420px);
+  /* Sized off viewport HEIGHT, not width — the 3D camera's apparent
+     object size is driven by the vertical FOV against viewport
+     height, so a vw-based size drifted way oversized on wide/short
+     screens. Must match .viewfinder-frame svg exactly (see its
+     comment for the full math) so the ring hands off cleanly. */
+  width: clamp(240px, 44vh, 460px);
   height: auto;
 }
 
@@ -142,7 +152,7 @@ html, body, #root {
    ============================================================ */
 .viewfinder-frame {
   position: fixed;
-  top: 50%;
+  top: calc(50% + 5vh);
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
@@ -150,7 +160,13 @@ html, body, #root {
 }
 
 .viewfinder-frame svg {
-  width: clamp(280px, 30vw, 420px);
+  /* The earth's own apparent diameter at rest is ~32vh (1.2-unit
+     model * 0.85 scale, 35° fov, camera at z=5 — see ScrollRig).
+     The corner brackets sit at a 30/360 inset in the SVG (83.3% of
+     the box), so the svg itself needs to be ~32vh / 0.833 * 1.15
+     margin ≈ 44vh for the bracket square to actually surround the
+     earth instead of cutting into it. Must match .loading-svg. */
+  width: clamp(240px, 44vh, 460px);
   height: auto;
 }
 

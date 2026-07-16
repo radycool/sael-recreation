@@ -49,29 +49,31 @@ export default function LoadingScreen() {
 
   return (
     <div className={`loading-screen ${exiting ? 'is-exiting' : ''}`}>
-      <svg viewBox="0 0 220 220" className="loading-svg">
-        {/* faint dotted guide circle, always fully visible */}
-        <circle cx="110" cy="110" r="100" className="loading-ring-guide" />
+      <div className="loading-ring-wrap">
+        <svg viewBox="0 0 220 220" className="loading-svg">
+          {/* faint dotted guide circle, always fully visible */}
+          <circle cx="110" cy="110" r="100" className="loading-ring-guide" />
 
-        {/* solid ring that draws itself in as progress increases */}
-        <circle
-          cx="110"
-          cy="110"
-          r={radius}
-          className="loading-ring-progress"
-          strokeDasharray={circumference}
-          strokeDashoffset={dashOffset}
-        />
+          {/* solid ring that draws itself in as progress increases */}
+          <circle
+            cx="110"
+            cy="110"
+            r={radius}
+            className="loading-ring-progress"
+            strokeDasharray={circumference}
+            strokeDashoffset={dashOffset}
+          />
 
-        {/* N/S/E/W tick brackets, like a camera viewfinder */}
-        <g className="loading-ticks">
-          <line x1="110" y1="0" x2="110" y2="20" />
-          <line x1="110" y1="200" x2="110" y2="220" />
-          <line x1="0" y1="110" x2="20" y2="110" />
-          <line x1="200" y1="110" x2="220" y2="110" />
-        </g>
-      </svg>
-      <div className="loading-label">{Math.round(progress)}%</div>
+          {/* N/S/E/W tick brackets, like a camera viewfinder */}
+          <g className="loading-ticks">
+            <line x1="110" y1="0" x2="110" y2="20" />
+            <line x1="110" y1="200" x2="110" y2="220" />
+            <line x1="0" y1="110" x2="20" y2="110" />
+            <line x1="200" y1="110" x2="220" y2="110" />
+          </g>
+        </svg>
+        <div className="loading-label">{Math.round(progress)}%</div>
+      </div>
     </div>
   )
 }
