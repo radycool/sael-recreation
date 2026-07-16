@@ -292,17 +292,17 @@ html, body, #root {
    HERO LAYOUT
    ============================================================ */
 .hero {
-  position: relative !important;
-  display: block !important;
-  padding: 0 !important;
-  max-width: none !important;
-  /* Bypasses the generic .section fade-in-on-.is-active system —
-     Hero handles its own visibility via the wordmark's scroll-driven
-     morph, and sits exactly at the scroll-0 boundary where
-     ScrollTrigger's onEnter doesn't fire until you actually scroll,
-     which was leaving all hero text invisible on first load. */
-  opacity: 1 !important;
-  transform: none !important;
+  /* Empty spacer now (see Hero.tsx) — just needs real height for
+     ScrollTrigger to measure against. No visible content, so none of
+     the old opacity/fade-in overrides are needed here anymore. */
+  min-height: 100vh;
+}
+
+.hero-content {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .eyebrow-top {
@@ -334,7 +334,7 @@ html, body, #root {
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
 }
 
-.hero .hero-tagline {
+.hero-content .hero-tagline {
   position: absolute;
   z-index: 1;
   right: 6vw;
