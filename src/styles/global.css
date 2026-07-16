@@ -265,6 +265,13 @@ html, body, #root {
   display: block !important;
   padding: 0 !important;
   max-width: none !important;
+  /* Bypasses the generic .section fade-in-on-.is-active system —
+     Hero handles its own visibility via the wordmark's scroll-driven
+     morph, and sits exactly at the scroll-0 boundary where
+     ScrollTrigger's onEnter doesn't fire until you actually scroll,
+     which was leaving all hero text invisible on first load. */
+  opacity: 1 !important;
+  transform: none !important;
 }
 
 .eyebrow-top {

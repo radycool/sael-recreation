@@ -3,7 +3,6 @@ import Scene from './scenes/Scene'
 import Section from './sections/Section'
 import Hero from './sections/Hero'
 import LoadingScreen from './components/LoadingScreen'
-import ViewfinderFrame from './components/ViewfinderFrame'
 import HeroBackground from './components/HeroBackground'
 import Nav from './components/Nav'
 
@@ -19,9 +18,6 @@ export default function App() {
 
       {/* Fixed 3D layer — stays in place, reacts to scroll */}
       <Scene modelPath="/models/earth-model.glb" />
-
-      {/* Decorative ring frame around the model, fades after hero */}
-      <ViewfinderFrame />
 
       {/* Nav bar + vertical side label — always on top */}
       <Nav />
