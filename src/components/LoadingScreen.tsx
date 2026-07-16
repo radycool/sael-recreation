@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useProgress } from '@react-three/drei'
+import { scrollState } from '../state/scrollState'
 
 /**
  * useProgress (from drei) tracks Three.js's loading manager — it knows
@@ -20,7 +21,10 @@ export default function LoadingScreen() {
   // is what was causing the screen to stay stuck at 100%.
   useEffect(() => {
     if (progress >= 100) {
-      const t = setTimeout(() => setExiting(true), 450)
+      const t = setTimeout(() => {
+        setExiting(true)
+        scrollState.appReady = true
+      }, 450)
       return () => clearTimeout(t)
     }
   }, [progress])
@@ -28,7 +32,10 @@ export default function LoadingScreen() {
   // Failsafe: no matter what, never let the loading screen block the
   // site for more than a few seconds.
   useEffect(() => {
-    const failsafe = setTimeout(() => setExiting(true), 4000)
+    const failsafe = setTimeout(() => {
+      setExiting(true)
+      scrollState.appReady = true
+    }, 4000)
     return () => clearTimeout(failsafe)
   }, [])
 
@@ -51,8 +58,10 @@ export default function LoadingScreen() {
     <div className={`loading-screen ${exiting ? 'is-exiting' : ''}`}>
       <div className="loading-ring-wrap">
         <svg viewBox="0 0 220 220" className="loading-svg">
-          {/* faint dotted guide circle, always fully visible */}
-          <circle cx="110" cy="110" r="100" className="loading-ring-guide" />
+          {/* faint dotted guide circle, always fully visible — radius
+              matches the corner-bracket frame's proportion (83.3% of
+              its own box) so the two hand off at the same size */}
+          <circle cx="110" cy="110" r="92" className="loading-ring-guide" />
 
           {/* solid ring that draws itself in as progress increases */}
           <circle

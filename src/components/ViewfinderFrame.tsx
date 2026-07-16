@@ -17,7 +17,11 @@ export default function ViewfinderFrame() {
         const isHero = scrollState.activeSection === 0
         // Fully gone by the same point the hero backdrop/tagline
         // have faded (0.7), instead of lingering at ~10% forever.
-        const opacity = isHero ? 1 - scrollState.sectionProgress / 0.7 : 0
+        const scrollOpacity = isHero ? 1 - scrollState.sectionProgress / 0.7 : 0
+        // Stays fully hidden until the loading screen actually starts
+        // exiting — otherwise it's visible underneath/around the
+        // loading ring the whole time, creating two overlapping frames.
+        const opacity = scrollState.appReady ? scrollOpacity : 0
         ref.current.style.opacity = String(Math.min(Math.max(opacity, 0), 1))
       }
       raf = requestAnimationFrame(update)

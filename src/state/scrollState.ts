@@ -10,6 +10,7 @@ export const scrollState = {
   globalProgress: 0, // 0 -> 1 across the entire page
   activeSection: 0, // index of the section currently in view
   sectionProgress: 0, // 0 -> 1 progress through that specific section
+  appReady: false, // flips true once LoadingScreen starts its exit fade
 }
 
 /**
