@@ -13,7 +13,7 @@ import { scrollState } from '../state/scrollState'
  *   camZ  = camera distance (lower = closer/bigger)
  */
 const keyframes = [
-  { rotY: 0, scale: 1, posY: -0.15, camZ: 5 }, // hero — sized to sit inside the viewfinder ring
+  { rotY: 0, scale: 0.85, posY: -0.15, camZ: 5 }, // hero — sized to sit inside the viewfinder ring
   { rotY: Math.PI * 0.55, scale: 1.3, posY: 0.15, camZ: 4 }, // lifts up, comes closer
   { rotY: Math.PI * 1.2, scale: 1.1, posY: 0.05, camZ: 4.5 },
   { rotY: Math.PI * 1.85, scale: 0.9, posY: -0.1, camZ: 5.5 }, // settles again

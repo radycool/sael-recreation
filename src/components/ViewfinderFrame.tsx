@@ -27,8 +27,8 @@ export default function ViewfinderFrame() {
   return (
     <div ref={ref} className="viewfinder-frame">
       <svg viewBox="0 0 360 360">
-        <circle cx="180" cy="180" r="160" className="viewfinder-ring-outer" />
-        <circle cx="180" cy="180" r="122" className="viewfinder-ring-inner" />
+        <circle cx="180" cy="180" r="172" className="viewfinder-ring-outer" />
+        <circle cx="180" cy="180" r="132" className="viewfinder-ring-inner" />
         <g className="viewfinder-ticks">
           <line x1="180" y1="8" x2="180" y2="34" />
           <line x1="180" y1="326" x2="180" y2="352" />

@@ -8,18 +8,29 @@ import { useProgress } from '@react-three/drei'
  * so the ring actually "draws itself in" as your model downloads.
  */
 export default function LoadingScreen() {
-  const { progress, active } = useProgress()
+  const { progress } = useProgress()
   const [visible, setVisible] = useState(true)
   const [exiting, setExiting] = useState(false)
 
-  // Once loading finishes, wait a beat (lets the ring visibly complete),
-  // then start the fade-out.
+  // Once progress hits 100, wait a beat (lets the ring visibly finish
+  // drawing), then start the fade-out. NOTE: we deliberately don't
+  // depend on useProgress's `active` flag here — it can flicker or
+  // get stuck `true` if multiple loaders register slightly out of
+  // sync (e.g. the GLTF model + the environment lighting map), which
+  // is what was causing the screen to stay stuck at 100%.
   useEffect(() => {
-    if (!active && progress >= 100) {
+    if (progress >= 100) {
       const t = setTimeout(() => setExiting(true), 450)
       return () => clearTimeout(t)
     }
-  }, [active, progress])
+  }, [progress])
+
+  // Failsafe: no matter what, never let the loading screen block the
+  // site for more than a few seconds.
+  useEffect(() => {
+    const failsafe = setTimeout(() => setExiting(true), 4000)
+    return () => clearTimeout(failsafe)
+  }, [])
 
   // After the fade-out transition finishes, unmount entirely so it
   // stops blocking clicks/scroll.

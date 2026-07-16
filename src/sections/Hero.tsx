@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="hero section">
       <div className="corner-dot" />
 
-      <div className="eyebrow-top">MADE FOR THE PLANET. BUILT TO LAST.</div>
+      <div className="eyebrow-top">SUSTAINABLE &amp; AFFORDABLE ENERGY FOR LIFE</div>
 
       <h1 className="hero-wordmark">{BRAND_NAME}</h1>
 

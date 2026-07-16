@@ -1,4 +1,4 @@
-const BRAND_NAME = 'TERRA' // <-- swap this one constant to rename everywhere
+const BRAND_NAME = 'SAEL' // <-- swap this one constant to rename everywhere
 
 export default function Nav() {
   return (
