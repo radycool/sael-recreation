@@ -1,14 +1,13 @@
 import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
 import Section from './sections/Section'
-import LoadingScreen from './components/LoadingScreen (1)'
-import ViewfinderFrame from './components/ViewfinderFrame (1)'
-import HeroBackground from './components/HeroBackground (1)'
+import Hero from './sections/Hero'
+import LoadingScreen from './components/LoadingScreen'
+import ViewfinderFrame from './components/ViewfinderFrame'
+import HeroBackground from './components/HeroBackground'
+import Nav from './components/Nav'
 
 export default function App() {
-  // Sets up Lenis smooth scroll + GSAP ScrollTrigger.
-  // From this point on, scrolling drives the 3D model — no mouse
-  // interaction needed. This is Step 3, the real Oryzo mechanism.
   useScrollSync()
 
   return (
@@ -24,13 +23,13 @@ export default function App() {
       {/* Decorative ring frame around the model, fades after hero */}
       <ViewfinderFrame />
 
-      {/* Scrollable content layer, sits on top */}
+      {/* Nav bar + vertical side label — always on top */}
+      <Nav />
+
+      {/* Scrollable content layer */}
       <div id="content">
-        <Section
-          eyebrow="Introducing"
-          title="A promise to the planet."
-          body="This is the hero section. Scroll down — the model rotates, scales, and the camera moves as you pass through each section below."
-        />
+        <Hero />
+
         <Section
           eyebrow="Materials"
           title="Made to leave less behind."

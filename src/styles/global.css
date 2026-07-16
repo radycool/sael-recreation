@@ -7,9 +7,19 @@ html, body, #root {
   min-height: 100%;
 }
 
+/* ============================================================
+   LAYER STACKING ORDER (bottom to top)
+   0: hero background image
+   1: 3D canvas (transparent, model renders here)
+   2: viewfinder decorative ring
+   3: scrollable content sections
+   4: nav + side label (always on top)
+   50: loading screen (covers everything until ready)
+   ============================================================ */
+
 #content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
 }
 
 .section {
@@ -24,9 +34,6 @@ html, body, #root {
   transition: opacity 0.6s ease, transform 0.6s ease;
 }
 
-/* This class is added/removed automatically by GSAP ScrollTrigger
-   (see useScrollSync.ts's toggleClass option) as each section
-   enters/leaves the viewport centre. */
 .section.is-active {
   opacity: 1;
   transform: translateY(0);
@@ -63,6 +70,13 @@ html, body, #root {
 .loading-screen.is-exiting {
   opacity: 0;
   pointer-events: none;
+}
+
+.loading-svg {
+  /* scales with viewport, like the reference — was previously a
+     fixed 220px, which is why it looked small on a wide screen */
+  width: clamp(220px, 22vw, 340px);
+  height: auto;
 }
 
 .loading-ring-guide {
@@ -102,8 +116,13 @@ html, body, #root {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1; /* above canvas (0), below content (2) */
+  z-index: 2;
   pointer-events: none;
+}
+
+.viewfinder-frame svg {
+  width: clamp(280px, 30vw, 420px);
+  height: auto;
 }
 
 .viewfinder-ring-outer {
@@ -130,11 +149,175 @@ html, body, #root {
 .hero-background {
   position: fixed;
   inset: 0;
-  z-index: -1; /* behind the transparent canvas */
+  z-index: 0;
   background-image:
     linear-gradient(180deg, rgba(11,11,13,0.35) 0%, rgba(11,11,13,0.55) 100%),
     url('/images/hero-bg.jpg');
   background-size: cover;
   background-position: center;
-  transition: opacity 0.1s linear; /* smooths the per-frame JS updates */
+  transition: opacity 0.1s linear;
+}
+
+/* ============================================================
+   NAV + SIDE LABEL
+   ============================================================ */
+.site-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 32px 48px;
+  pointer-events: none;
+}
+
+.site-nav__logo {
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  font-size: var(--h5);
+  pointer-events: auto;
+}
+
+.site-nav__links {
+  display: flex;
+  gap: 28px;
+  pointer-events: auto;
+}
+
+.site-nav__links a {
+  color: var(--fg);
+  text-decoration: none;
+  font-size: var(--btn);
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.site-nav__links a.is-active,
+.site-nav__links a:hover {
+  opacity: 1;
+}
+
+.side-label {
+  position: fixed;
+  top: 90px;
+  right: 0;
+  z-index: 4;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-size: var(--body3);
+  letter-spacing: 0.15em;
+  padding: 16px 10px;
+  background: rgba(255, 255, 255, 0.06);
+  opacity: 0.7;
+}
+
+/* ============================================================
+   HERO LAYOUT
+   ============================================================ */
+.hero {
+  position: relative !important;
+  display: block !important;
+  padding: 0 !important;
+  max-width: none !important;
+}
+
+.corner-dot {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fg);
+}
+
+.eyebrow-top {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--body3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.7;
+  white-space: nowrap;
+}
+
+.hero-wordmark {
+  position: absolute;
+  left: 4vw;
+  top: 16vh;
+  font-size: clamp(4rem, 3rem + 8vw, 11rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  max-width: 90vw;
+}
+
+.hero-tagline {
+  position: absolute;
+  right: 6vw;
+  top: 46vh;
+  max-width: 32ch;
+  font-size: var(--h4);
+  line-height: 1.5;
+  opacity: 0.85;
+  text-align: right;
+}
+
+.info-card {
+  position: absolute;
+  left: 4vw;
+  bottom: 12vh;
+  max-width: 30ch;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  padding: 24px;
+  border-radius: 4px;
+}
+
+.info-card__title {
+  font-size: var(--h5);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+.info-card hr {
+  border: none;
+  border-top: 1px dashed rgba(244, 242, 238, 0.3);
+  margin: 12px 0;
+}
+
+.info-card__body {
+  font-size: var(--body3);
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+.scroll-cue {
+  position: absolute;
+  left: 50%;
+  bottom: 40px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--btn);
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+}
+
+.scroll-cue__chevron {
+  animation: bob 1.6s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
 }
