@@ -60,10 +60,12 @@ export default function HeroContent() {
 
         // Slides + shrinks from the big hero position toward the
         // top-left corner, where it settles and just stays — this IS
-        // the logo now, no separate element or handoff.
+        // the logo now, no separate element or handoff. Stops at a
+        // more moderate size (0.72, not 0.88) so it doesn't shrink
+        // past the nav row — settles roughly in line with it instead.
         const translateX = moveT * -3 // vw
-        const translateY = moveT * -15.5 // vh
-        const scale = 1 - moveT * 0.88
+        const translateY = moveT * -12 // vh
+        const scale = 1 - moveT * 0.72
 
         wordmarkRef.current.style.transform =
           `translate(${translateX}vw, ${translateY}vh) scale(${scale})`

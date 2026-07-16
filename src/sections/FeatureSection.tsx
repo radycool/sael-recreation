@@ -1,37 +1,41 @@
 import { useEffect, useRef } from 'react'
 import { scrollState } from '../state/scrollState'
 
-// How far off-screen each column starts/ends, in vh.
-const TRAVEL = 34
+// Each word gets its own slice of the overall fade window, staggered
+// by its position in the sentence — that's what makes it read as an
+// "ascending" cascade rather than the whole line popping at once.
+const FADE_IN_END = 0.18
+const FADE_OUT_START = 0.82
 
-// Opacity trapezoid: fades in over the first slice, fully visible
-// through the middle, fades out over the last slice — while position
-// keeps moving continuously across the WHOLE 0-1 range regardless,
-// so it never just sits still; it's always mid-scroll.
-const FADE_IN_END = 0.14
-const FADE_OUT_START = 0.86
+function wordStyle(p: number, index: number, total: number) {
+  const inStart = (index / total) * (FADE_IN_END * 0.7)
+  const inEnd = inStart + FADE_IN_END * 0.45
+  const outStart = FADE_OUT_START + (index / total) * ((1 - FADE_OUT_START) * 0.5)
+  const outEnd = outStart + (1 - FADE_OUT_START) * 0.6
 
-function motionFor(p: number, direction: 1 | -1) {
-  // direction +1 (left column): starts below (+TRAVEL) at p=0, passes
-  // through 0 at the midpoint, continues up and off (-TRAVEL) at p=1.
-  // direction -1 (right column): the mirror image — starts above.
-  const translateY = direction * TRAVEL * (1 - 2 * p)
-
-  let opacity: number
-  if (p < FADE_IN_END) {
-    opacity = p / FADE_IN_END
-  } else if (p < FADE_OUT_START) {
-    opacity = 1
+  let settledT: number // 0 = hidden below, 1 = settled in place
+  if (p < inEnd) {
+    settledT = Math.min(Math.max((p - inStart) / (inEnd - inStart), 0), 1)
+  } else if (p < outStart) {
+    settledT = 1
   } else {
-    opacity = 1 - Math.min((p - FADE_OUT_START) / (1 - FADE_OUT_START), 1)
+    settledT = 1 - Math.min(Math.max((p - outStart) / (outEnd - outStart), 0), 1)
   }
 
-  return { translateY, opacity: Math.min(Math.max(opacity, 0), 1) }
+  return {
+    translateY: (1 - settledT) * 26, // px — rises up into place
+    rotateX: (1 - settledT) * 55, // deg — flattens out as it settles, the "3D" part
+    opacity: settledT,
+  }
 }
 
+const LEFT_TEXT = 'EMBRACING GREEN ENERGY FOR A SUSTAINABLE WORLD'
+const RIGHT_TEXT =
+  "With a plant first approach, we are making a sustainable impact by propelling green energy solutions."
+
 export default function FeatureSection() {
-  const leftRef = useRef<HTMLDivElement>(null)
-  const rightRef = useRef<HTMLDivElement>(null)
+  const leftRef = useRef<HTMLHeadingElement>(null)
+  const rightRef = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
     let raf: number
@@ -39,15 +43,14 @@ export default function FeatureSection() {
       const isThis = scrollState.activeSection === 1
       const p = isThis ? scrollState.sectionProgress : 0
 
-      if (leftRef.current) {
-        const { translateY, opacity } = motionFor(p, 1)
-        leftRef.current.style.transform = `translateY(${translateY}vh)`
-        leftRef.current.style.opacity = String(opacity)
-      }
-      if (rightRef.current) {
-        const { translateY, opacity } = motionFor(p, -1)
-        rightRef.current.style.transform = `translateY(${translateY}vh)`
-        rightRef.current.style.opacity = String(opacity)
+      for (const ref of [leftRef, rightRef]) {
+        if (!ref.current) continue
+        const words = ref.current.querySelectorAll<HTMLElement>('.word')
+        words.forEach((word, i) => {
+          const { translateY, rotateX, opacity } = wordStyle(p, i, words.length)
+          word.style.transform = `translateY(${translateY}px) rotateX(${rotateX}deg)`
+          word.style.opacity = String(opacity)
+        })
       }
 
       raf = requestAnimationFrame(update)
@@ -59,17 +62,25 @@ export default function FeatureSection() {
   return (
     <section className="section section--spin">
       <div className="feature-sticky">
-        <div className="feature-sticky__left" ref={leftRef}>
-          <h2>EMBRACING GREEN ENERGY FOR A SUSTAINABLE WORLD</h2>
+        <div className="feature-sticky__left">
+          <h2 ref={leftRef} className="ascend-text">
+            {LEFT_TEXT.split(' ').map((w, i) => (
+              <span className="word" key={i}>
+                {w}&nbsp;
+              </span>
+            ))}
+          </h2>
         </div>
-        <div className="feature-sticky__right" ref={rightRef}>
-          <p>
-            With a plant first approach, we are making a sustainable
-            impact by propelling green energy solutions.
+        <div className="feature-sticky__right">
+          <p ref={rightRef} className="ascend-text">
+            {RIGHT_TEXT.split(' ').map((w, i) => (
+              <span className="word" key={i}>
+                {w}&nbsp;
+              </span>
+            ))}
           </p>
         </div>
       </div>
     </section>
   )
 }
-

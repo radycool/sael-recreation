@@ -30,7 +30,7 @@ const FEATURE_GROW_TO = HERO_GROW_TO * 1.2
 // same window the hand takes to arrive (HAND_ENTER_END, from
 // HandRig.tsx), then holds — continuous from BASE_SCALE, no jump.
 const HAND_HOLD_SCALE = 0.5
-const HAND_HOLD_POS_Y = 0.55 // sits just above the hand's settled palm
+const HAND_HOLD_POS_Y = -0.4 // right down at the hand, not up near the heading
 
 export default function ScrollRig({ children }: { children: ReactNode }) {
   const group = useRef<Group>(null)

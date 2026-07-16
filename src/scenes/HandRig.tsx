@@ -9,16 +9,18 @@ import { scrollState } from '../state/scrollState'
 export const HAND_ENTER_END = 0.2
 export const HAND_HOLD_END = 0.8
 
-// Resting position once settled — sits just under/behind where the
-// earth ends up (see ScrollRig's hand-hold branch), so it reads as
-// cupping the earth from below rather than two unrelated objects.
-const SETTLED_POS: [number, number, number] = [0, -1.05, 0.35]
+// Resting position once settled — right up against where the earth
+// ends up (see ScrollRig's hand-hold branch), so the earth actually
+// reads as resting on the fingers, not floating a full unit above them.
+const SETTLED_POS: [number, number, number] = [0, -0.72, 0.3]
 const START_POS: [number, number, number] = [0, -3.2, 0.1]
 
-// Rotation reaches in at an angle, then levels out into a neutral
-// "holding" pose once settled.
-const START_ROT: [number, number, number] = [0.9, -0.15, -0.45]
-const SETTLED_ROT: [number, number, number] = [0.35, 0, -0.08]
+// Rotation reaches in at an angle, then levels out into a much more
+// neutral, mostly-upright "presenting" pose once settled — the
+// earlier values were tilting/rotating it enough to read as reaching
+// or grasping away from the object instead of holding it underneath.
+const START_ROT: [number, number, number] = [0.55, -0.1, -0.25]
+const SETTLED_ROT: [number, number, number] = [0.12, 0, -0.04]
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
