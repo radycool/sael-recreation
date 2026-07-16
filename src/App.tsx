@@ -1,69 +1,40 @@
-import { useState } from 'react'
+import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
-
-const MODELS = {
-  earth: { path: '/models/earth-model.glb', label: 'Free Earth Model' },
-  earthquakes: { path: '/models/earthquakes-2000-2019.glb', label: 'Earthquakes 2000–2019' },
-} as const
-
-type ModelKey = keyof typeof MODELS
+import Section from './sections/Section'
 
 export default function App() {
-  const [activeModel, setActiveModel] = useState<ModelKey>('earth')
+  // Sets up Lenis smooth scroll + GSAP ScrollTrigger.
+  // From this point on, scrolling drives the 3D model — no mouse
+  // interaction needed. This is Step 3, the real Oryzo mechanism.
+  useScrollSync()
 
   return (
     <main>
-      {/* The fixed 3D layer — sits behind everything */}
-      <Scene modelPath={MODELS[activeModel].path} />
+      {/* Fixed 3D layer — stays in place, reacts to scroll */}
+      <Scene modelPath="/models/earth-model.glb" />
 
-      {/* Simple UI to switch between your two models for comparison.
-          This is just a Step 2 testing tool — it won't be part of
-          the final site. */}
-      <div
-        style={{
-          position: 'fixed',
-          top: 24,
-          left: 24,
-          zIndex: 10,
-          display: 'flex',
-          gap: 8,
-        }}
-      >
-        {(Object.keys(MODELS) as ModelKey[]).map((key) => (
-          <button
-            key={key}
-            onClick={() => setActiveModel(key)}
-            style={{
-              padding: '8px 18px',
-              borderRadius: 999,
-              border: '1px solid rgba(255,255,255,0.2)',
-              background: activeModel === key ? 'var(--accent)' : 'rgba(0,0,0,0.4)',
-              color: 'var(--fg)',
-              fontSize: 'var(--btn)',
-              lineHeight: 1.2,
-              cursor: 'pointer',
-              backdropFilter: 'blur(6px)',
-              transition: 'background 0.2s ease',
-              whiteSpace: 'nowrap',
-            }}
-          >
-            {MODELS[key].label}
-          </button>
-        ))}
-      </div>
-
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 24,
-          left: 24,
-          zIndex: 10,
-          fontSize: 'var(--body3)',
-          opacity: 0.6,
-          maxWidth: '32ch',
-        }}
-      >
-        Drag to orbit, scroll to zoom (temporary — this becomes scroll-driven in Step 4).
+      {/* Scrollable content layer, sits on top */}
+      <div id="content">
+        <Section
+          eyebrow="Introducing"
+          title="A promise to the planet."
+          body="This is the hero section. Scroll down — the model rotates, scales, and the camera moves as you pass through each section below."
+        />
+        <Section
+          eyebrow="Materials"
+          title="Made to leave less behind."
+          body="Replace this with your real copy. Each section owns its own moment in the model's animation, defined in ScrollRig's keyframes array."
+        />
+        <Section
+          eyebrow="Impact"
+          title="Every choice, measured."
+          body="This is where a data-driven section could live — we can swap in your earthquakes model here later if that fits your sustainability story."
+        />
+        <Section
+          eyebrow="Available now"
+          title="Join the shift."
+          body="This is your closing / CTA section."
+        />
       </div>
     </main>
   )
