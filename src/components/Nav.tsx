@@ -6,10 +6,13 @@ export default function Nav() {
       <header className="site-nav">
         <div className="site-nav__logo">{BRAND_NAME}</div>
         <nav className="site-nav__links">
-          <a href="#" className="is-active">INTRO</a>
-          <a href="#">IMPACT</a>
-          <a href="#">PRODUCT</a>
-          <a href="#">CONTACT</a>
+          <a href="#" className="is-active">Company</a>
+          <a href="#">Businesses</a>
+          <a href="#">Sustainability</a>
+          <a href="#">Investors</a>
+          <a href="#">Newsroom</a>
+          <a href="#">Career</a>
+          <a href="#">Contact Us</a>
         </nav>
       </header>
 
