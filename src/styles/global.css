@@ -9,7 +9,7 @@ html, body, #root {
 
 #content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .section {
@@ -41,4 +41,100 @@ html, body, #root {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   margin-bottom: 0.75em;
+}
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 16px;
+  background: var(--bg);
+  transition: opacity 0.7s ease;
+  opacity: 1;
+}
+
+.loading-screen.is-exiting {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.loading-ring-guide {
+  fill: none;
+  stroke: rgba(244, 242, 238, 0.15);
+  stroke-width: 1;
+  stroke-dasharray: 2 6;
+}
+
+.loading-ring-progress {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-linecap: round;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  transition: stroke-dashoffset 0.2s linear;
+}
+
+.loading-ticks line {
+  stroke: rgba(244, 242, 238, 0.5);
+  stroke-width: 1;
+}
+
+.loading-label {
+  font-size: var(--body3);
+  letter-spacing: 0.1em;
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   VIEWFINDER FRAME (decorative ring around the model)
+   ============================================================ */
+.viewfinder-frame {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1; /* above canvas (0), below content (2) */
+  pointer-events: none;
+}
+
+.viewfinder-ring-outer {
+  fill: none;
+  stroke: rgba(244, 242, 238, 0.22);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+
+.viewfinder-ring-inner {
+  fill: none;
+  stroke: rgba(244, 242, 238, 0.35);
+  stroke-width: 1;
+}
+
+.viewfinder-ticks line {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+/* ============================================================
+   HERO BACKGROUND IMAGE
+   ============================================================ */
+.hero-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1; /* behind the transparent canvas */
+  background-image:
+    linear-gradient(180deg, rgba(11,11,13,0.35) 0%, rgba(11,11,13,0.55) 100%),
+    url('/images/hero-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  transition: opacity 0.1s linear; /* smooths the per-frame JS updates */
 }

@@ -1,6 +1,9 @@
 import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
 import Section from './sections/Section'
+import LoadingScreen from './components/LoadingScreen (1)'
+import ViewfinderFrame from './components/ViewfinderFrame (1)'
+import HeroBackground from './components/HeroBackground (1)'
 
 export default function App() {
   // Sets up Lenis smooth scroll + GSAP ScrollTrigger.
@@ -10,8 +13,16 @@ export default function App() {
 
   return (
     <main>
+      <LoadingScreen />
+
+      {/* Hero backdrop image, fades out as you scroll past the hero */}
+      <HeroBackground />
+
       {/* Fixed 3D layer — stays in place, reacts to scroll */}
       <Scene modelPath="/models/earth-model.glb" />
+
+      {/* Decorative ring frame around the model, fades after hero */}
+      <ViewfinderFrame />
 
       {/* Scrollable content layer, sits on top */}
       <div id="content">

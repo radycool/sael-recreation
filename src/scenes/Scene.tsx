@@ -12,6 +12,7 @@ export default function Scene({ modelPath }: SceneProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 6], fov: 35 }}
+      gl={{ alpha: true, antialias: true }}
       style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', zIndex: 0 }}
     >
       <ambientLight intensity={0.6} />
