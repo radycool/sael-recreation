@@ -15,9 +15,10 @@ export default function HeroBackground() {
     const update = () => {
       if (ref.current) {
         const isHero = scrollState.activeSection === 0
-        // Fades out over the first ~70% of the hero's scroll range,
-        // fully gone by the time the "lift" into section 2 begins.
-        const opacity = isHero ? 1 - scrollState.sectionProgress / 0.7 : 0
+        // Fades out across the same window the earth grows in
+        // (ScrollRig's HERO_GROW_END) — the darkening and the "lift"
+        // finish together instead of on separate timers.
+        const opacity = isHero ? 1 - scrollState.sectionProgress / 0.9 : 0
         ref.current.style.opacity = String(Math.min(Math.max(opacity, 0), 1))
       }
       raf = requestAnimationFrame(update)

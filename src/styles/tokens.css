@@ -22,7 +22,7 @@
   --body3: clamp(0.85rem, 0.78rem + 0.3vw, 0.95rem);
   --btn:   clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
 
-  --bg: #0b0b0d;
+  --bg: #241209;
   --fg: #f4f2ee;
   --accent: #ff5a1f;
 }

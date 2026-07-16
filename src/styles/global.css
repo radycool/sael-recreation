@@ -196,7 +196,7 @@ html, body, #root {
      left ~38% (wordmark/card territory — already dark enough) and
      only darkens further right, for tagline/nav contrast. */
   background-image:
-    linear-gradient(100deg, transparent 0%, transparent 38%, rgba(10, 8, 6, 0.32) 100%),
+    linear-gradient(100deg, transparent 0%, transparent 42%, rgba(6, 5, 4, 0.5) 100%),
     url('/images/hero-bg.jpg');
   background-size: cover;
   background-position: center;
@@ -216,16 +216,41 @@ html, body, #root {
   justify-content: space-between;
   align-items: center;
   padding: 32px 48px;
+  /* Container + links are visible from load, matching the ref — only
+     the logo (below) waits for the wordmark to land. */
   pointer-events: none;
-  opacity: 0; /* revealed by Nav.tsx once you scroll off the hero */
-  will-change: opacity, transform;
+}
+
+.site-nav__logo-slot {
+  position: relative;
+  width: 80px;
+  height: 24px;
+}
+
+.site-nav__dot {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fg);
+  transform: translateY(-50%);
+  pointer-events: none;
+  will-change: opacity;
 }
 
 .site-nav__logo {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
   font-weight: 800;
   letter-spacing: 0.02em;
   font-size: var(--h5);
+  opacity: 0;
   pointer-events: auto;
+  will-change: opacity, transform;
 }
 
 .site-nav__links {
