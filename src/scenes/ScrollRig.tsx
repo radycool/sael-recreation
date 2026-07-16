@@ -2,6 +2,7 @@ import { useRef, type ReactNode } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Group } from 'three'
 import { scrollState } from '../state/scrollState'
+import { HAND_ENTER_END } from './HandRig'
 
 const BASE_SCALE = 0.95
 const BASE_CAM_Z = 5
@@ -25,6 +26,12 @@ const FEATURE_HOLD_END = 0.75
 const FEATURE_SETTLE_END = 0.95
 const FEATURE_GROW_TO = HERO_GROW_TO * 1.2
 
+// Section 2 (hand): earth shrinks down to "fit in the hand" over the
+// same window the hand takes to arrive (HAND_ENTER_END, from
+// HandRig.tsx), then holds — continuous from BASE_SCALE, no jump.
+const HAND_HOLD_SCALE = 0.5
+const HAND_HOLD_POS_Y = 0.55 // sits just above the hand's settled palm
+
 export default function ScrollRig({ children }: { children: ReactNode }) {
   const group = useRef<Group>(null)
   const { camera } = useThree()
@@ -34,17 +41,18 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
 
     const { activeSection, sectionProgress: p } = scrollState
 
-    group.current.position.y = BASE_POS_Y
     camera.position.z = BASE_CAM_Z
 
     if (activeSection === 0) {
       // Hero: no spin, but scales up as you scroll through it — this
       // is the "lift" into the next section.
+      group.current.position.y = BASE_POS_Y
       const growT = Math.min(Math.max(p / HERO_GROW_END, 0), 1)
       group.current.scale.setScalar(BASE_SCALE + growT * (HERO_GROW_TO - BASE_SCALE))
       group.current.rotation.y = 0
       group.current.rotation.x = 0
     } else if (activeSection === 1) {
+      group.current.position.y = BASE_POS_Y
       // Scale: starts exactly at HERO_GROW_TO (continuous with where
       // the hero left off), ramps up through the hold window, then
       // settles back down to resting size as the section wraps up.
@@ -75,7 +83,17 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
         group.current.rotation.y = Math.PI
         group.current.rotation.x = ((holdT - 0.5) / 0.5) * Math.PI
       }
+    } else if (activeSection === 2) {
+      // Continuous from BASE_SCALE (where section 1 left off) down to
+      // the smaller "held in hand" size, over the same window the
+      // hand takes to arrive — then just holds.
+      const t = Math.min(Math.max(p / HAND_ENTER_END, 0), 1)
+      group.current.scale.setScalar(BASE_SCALE + t * (HAND_HOLD_SCALE - BASE_SCALE))
+      group.current.position.y = BASE_POS_Y + t * (HAND_HOLD_POS_Y - BASE_POS_Y)
+      group.current.rotation.y = 0
+      group.current.rotation.x = 0
     } else {
+      group.current.position.y = BASE_POS_Y
       group.current.scale.setScalar(BASE_SCALE)
       group.current.rotation.y = 0
       group.current.rotation.x = 0

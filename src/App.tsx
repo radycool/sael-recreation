@@ -2,6 +2,7 @@ import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
 import Hero from './sections/Hero'
 import FeatureSection from './sections/FeatureSection'
+import HandSection from './sections/HandSection'
 import LoadingScreen from './components/LoadingScreen'
 import HeroBackground from './components/HeroBackground'
 import HeroContent from './components/HeroContent'
@@ -38,6 +39,8 @@ export default function App() {
         <Hero />
 
         <FeatureSection />
+
+        <HandSection />
       </div>
     </main>
   )

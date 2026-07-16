@@ -120,6 +120,82 @@ html, body, #root {
   opacity: 0.9;
 }
 
+.ascend-text {
+  perspective: 700px;
+}
+
+.ascend-text .word {
+  display: inline-block;
+  transform-origin: bottom center;
+  will-change: transform, opacity;
+}
+
+/* ============================================================
+   HAND SECTION (earth settles into the hand, "smoke" text reveal)
+   ============================================================ */
+.hand-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hand-heading {
+  position: absolute;
+  top: 14vh;
+  left: 6vw;
+  max-width: 60vw;
+  will-change: filter, opacity, transform;
+}
+
+.hand-heading h2 {
+  font-size: clamp(2.5rem, 1.5rem + 4.5vw, 5.5rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.hand-heading__star {
+  color: var(--accent);
+  font-size: 0.5em;
+  vertical-align: top;
+}
+
+.hand-heading__model {
+  margin-top: 0.4em;
+  font-size: var(--h4);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+}
+
+.hand-caption {
+  position: absolute;
+  top: 50vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: var(--body2);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg);
+  opacity: 0.85;
+  will-change: filter, opacity, transform;
+}
+
+.hand-footnote {
+  position: absolute;
+  bottom: 6vh;
+  right: 6vw;
+  max-width: 22ch;
+  text-align: right;
+  font-size: var(--body3);
+  color: var(--fg);
+  opacity: 0.6;
+  will-change: filter, opacity, transform;
+}
+
 /* ============================================================
    LOADING SCREEN
    ============================================================ */

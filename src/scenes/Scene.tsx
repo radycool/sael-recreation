@@ -3,6 +3,7 @@ import { Environment } from '@react-three/drei'
 import { Suspense } from 'react'
 import EarthModel from './EarthModel'
 import ScrollRig from './ScrollRig'
+import HandRig from './HandRig'
 
 type SceneProps = {
   modelPath: string
@@ -24,6 +25,7 @@ export default function Scene({ modelPath }: SceneProps) {
         <ScrollRig>
           <EarthModel path={modelPath} scale={1} />
         </ScrollRig>
+        <HandRig />
       </Suspense>
     </Canvas>
   )
