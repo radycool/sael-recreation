@@ -3,6 +3,7 @@ import Scene from './scenes/Scene'
 import Hero from './sections/Hero'
 import FeatureSection from './sections/FeatureSection'
 import PortableSection from './sections/PortableSection'
+import JourneySection from './sections/JourneySection'
 // import HandSection from './sections/HandSection' // hand section on hold for now
 import LoadingScreen from './components/LoadingScreen'
 import HeroBackground from './components/HeroBackground'
@@ -42,6 +43,8 @@ export default function App() {
         <FeatureSection />
 
         <PortableSection />
+
+        <JourneySection />
 
         {/* <HandSection /> — hand section on hold for now */}
       </div>

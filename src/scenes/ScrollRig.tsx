@@ -156,10 +156,15 @@ export default function ScrollRig({ primaryModelPath, secondaryModelPath }: Scro
         group.current.scale.setScalar(BASE_SCALE + eased * (PORTABLE_GROW_TO - BASE_SCALE))
       }
     } else {
+      // Past the "diving in" finale — both models hidden rather than
+      // letting the primary one pop back to a small default size,
+      // which would undo the immersive grow-huge effect abruptly.
       group.current.position.y = BASE_POS_Y
       group.current.scale.setScalar(BASE_SCALE)
       group.current.rotation.y = 0
       group.current.rotation.x = 0
+      if (primaryRef.current) primaryRef.current.scale.setScalar(0)
+      if (secondaryRef.current) secondaryRef.current.scale.setScalar(0)
     }
   })
 

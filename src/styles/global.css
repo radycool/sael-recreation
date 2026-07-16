@@ -197,6 +197,157 @@ html, body, #root {
 }
 
 /* ============================================================
+   PORTABLE SECTION (circle -> square outline, sliding heading)
+   ============================================================ */
+.portable-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.portable-eyebrow {
+  position: absolute;
+  top: 14vh;
+  left: 6vw;
+  font-size: var(--body2);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg);
+  opacity: 0.85;
+}
+
+.portable-heading {
+  position: absolute;
+  top: 50vh;
+  left: 6vw;
+  transform: translateY(-50%);
+  font-size: clamp(2.5rem, 1.5rem + 5vw, 6rem);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--fg);
+  will-change: transform, opacity, text-shadow;
+}
+
+.portable-outline {
+  position: fixed;
+  top: calc(50% + 5vh);
+  left: 50%;
+  transform: translate(-50%, -50%);
+  will-change: opacity;
+}
+
+.portable-outline svg {
+  /* Same footprint math as the earlier loading/viewfinder rings —
+     see their comments for why vh (not vw) is what matches the 3D
+     camera's apparent object size. */
+  width: clamp(240px, 44vh, 460px);
+  height: auto;
+}
+
+.portable-outline__rect {
+  fill: none;
+  stroke: rgba(244, 242, 238, 0.5);
+  stroke-width: 1.5;
+  stroke-dasharray: 3 8;
+}
+
+.portable-outline__ticks line {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+}
+
+/* ============================================================
+   JOURNEY SECTION (timeline: box grows into an image carousel)
+   ============================================================ */
+.journey-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.journey-eyebrow {
+  position: fixed;
+  font-size: var(--body2);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  white-space: nowrap;
+  will-change: top, left, transform, opacity;
+}
+
+.journey-heading {
+  position: fixed;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--fg);
+  white-space: nowrap;
+  will-change: top, left, transform, opacity, font-size;
+}
+
+.journey-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(244, 242, 238, 0.2);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  will-change: width, height, opacity;
+}
+
+.journey-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.journey-card {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+}
+
+.journey-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.journey-card__overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 28px 32px;
+  background: linear-gradient(to top, rgba(10, 6, 3, 0.85), transparent 70%);
+}
+
+.journey-card__year {
+  font-size: var(--h4);
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+
+.journey-card__title {
+  font-size: var(--body1);
+  font-weight: 600;
+  color: var(--fg);
+}
+
+/* ============================================================
    LOADING SCREEN
    ============================================================ */
 .loading-screen {
