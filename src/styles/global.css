@@ -335,8 +335,12 @@ html, body, #root {
 .hero {
   /* Empty spacer now (see Hero.tsx) — just needs real height for
      ScrollTrigger to measure against. No visible content, so none of
-     the old opacity/fade-in overrides are needed here anymore. */
-  min-height: 100vh;
+     the old opacity/fade-in overrides are needed here anymore.
+     220vh (not 100vh) — the hero's whole animation timeline (eyebrow
+     fade, tagline fade, wordmark morph, earth grow, bg darken, nav
+     reveal) is driven by fraction-of-this-height, so it needs real
+     scroll distance to not feel rushed/abrupt. */
+  min-height: 220vh;
 }
 
 .hero-content {
@@ -348,7 +352,7 @@ html, body, #root {
 
 .eyebrow-top {
   position: absolute;
-  top: 12vh;
+  top: 5vh;
   right: 6vw; /* overridden precisely by Hero.tsx's measurement */
   z-index: 1;
   font-size: var(--body2);
