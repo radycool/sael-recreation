@@ -100,9 +100,11 @@ html, body, #root {
 }
 
 .loading-svg {
-  /* scales with viewport, like the reference — was previously a
-     fixed 220px, which is why it looked small on a wide screen */
-  width: clamp(220px, 22vw, 340px);
+  /* Same footprint as .viewfinder-frame svg — the loading ring should
+     sit exactly where the corner-bracket frame takes over once it's
+     gone, so it reads as "the same frame, tightening around the
+     earth" rather than two unrelated shapes. */
+  width: clamp(280px, 30vw, 420px);
   height: auto;
 }
 
@@ -152,17 +154,12 @@ html, body, #root {
   height: auto;
 }
 
-.viewfinder-ring-outer {
+.viewfinder-corners {
   fill: none;
-  stroke: rgba(244, 242, 238, 0.22);
-  stroke-width: 1;
-  stroke-dasharray: 2 7;
-}
-
-.viewfinder-ring-inner {
-  fill: none;
-  stroke: rgba(244, 242, 238, 0.35);
-  stroke-width: 1;
+  stroke: rgba(244, 242, 238, 0.45);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  stroke-linejoin: miter;
 }
 
 .viewfinder-ticks line {
@@ -255,9 +252,8 @@ html, body, #root {
 
 .eyebrow-top {
   position: absolute;
-  top: 40px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 44px;
+  left: 6vw;
   z-index: 1;
   font-size: var(--body3);
   letter-spacing: 0.1em;

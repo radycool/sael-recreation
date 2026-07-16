@@ -41,12 +41,19 @@ export function useScrollSync() {
 
     // Per-section progress — this is what lets each section define
     // its own moment in the model's animation.
+    //
+    // Hero (index 0) sits flush with the top of the page, so it needs
+    // its own trigger anchored to the viewport TOP ('top top' -> 'bottom
+    // top'), giving progress = 0 exactly at page load. The later
+    // "spin/hold" sections are much taller than the viewport, so
+    // 'top center' -> 'bottom center' is fine for them (that's what
+    // centers the "hold" phase of getSpinPhase while they're in view).
     const sections = gsap.utils.toArray<HTMLElement>('.section')
     const sectionTriggers = sections.map((sec, i) =>
       ScrollTrigger.create({
         trigger: sec,
-        start: 'top center',
-        end: 'bottom center',
+        start: i === 0 ? 'top top' : 'top center',
+        end: i === 0 ? 'bottom top' : 'bottom center',
         onUpdate: (self) => {
           scrollState.activeSection = i
           scrollState.sectionProgress = self.progress
