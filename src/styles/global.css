@@ -256,44 +256,13 @@ html, body, #root {
   right: 0;
   z-index: 4;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   padding: 32px 48px;
-  /* Container + links are visible from load, matching the ref — only
-     the logo (below) waits for the wordmark to land. */
+  /* Links are visible from load, matching the ref. The logo is gone
+     from here entirely — the hero wordmark itself settles at
+     top-left and stays there permanently (see HeroContent.tsx). */
   pointer-events: none;
-}
-
-.site-nav__logo-slot {
-  position: relative;
-  width: 80px;
-  height: 24px;
-}
-
-.site-nav__dot {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--fg);
-  transform: translateY(-50%);
-  pointer-events: none;
-  will-change: opacity;
-}
-
-.site-nav__logo {
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  font-weight: 800;
-  letter-spacing: 0.02em;
-  font-size: var(--h5);
-  opacity: 0;
-  pointer-events: auto;
-  will-change: opacity, transform;
 }
 
 .site-nav__links {
@@ -368,8 +337,8 @@ html, body, #root {
 }
 
 .hero-wordmark {
-  position: absolute;
-  z-index: 1;
+  position: fixed;
+  z-index: 4;
   left: 4vw;
   top: 16vh;
   font-size: clamp(4rem, 3rem + 8vw, 11rem);

@@ -2,11 +2,9 @@ import { useEffect, useRef } from 'react'
 import { BRAND_NAME } from './Nav'
 import { scrollState } from '../state/scrollState'
 
-// Kept in sync with Nav.tsx's own MOVE_END — the wordmark shrinks and
-// slides continuously (staying fully opaque the whole time, no fade)
-// until it settles exactly into the nav logo's spot. Nav.tsx then
-// snaps its own logo to visible at that same instant, so it reads as
-// the wordmark itself becoming the logo, not two elements crossfading.
+// How far through the hero's scroll the wordmark takes to shrink and
+// slide into its final top-left spot, where it just stays permanently
+// — it IS the logo now, not a separate element it hands off to.
 const MOVE_END = 0.7
 
 // Staggered, non-overlapping fade-out windows — each one is fully
@@ -52,15 +50,17 @@ export default function HeroContent() {
     let raf: number
     const update = () => {
       const isHero = scrollState.activeSection === 0
+      // Once you've scrolled past the hero, p locks to 1 — moveT
+      // stays at 1, so the wordmark just stays parked at its final
+      // settled position/scale forever, permanently.
       const p = isHero ? Math.min(Math.max(scrollState.sectionProgress, 0), 1) : 1
 
       if (wordmarkRef.current) {
         const moveT = Math.min(p / MOVE_END, 1)
 
         // Slides + shrinks from the big hero position toward the
-        // nav bar's top-left logo spot (~48px / ~32px). Stays fully
-        // opaque the entire time — it settles into place rather than
-        // fading into a separate element.
+        // top-left corner, where it settles and just stays — this IS
+        // the logo now, no separate element or handoff.
         const translateX = moveT * -3 // vw
         const translateY = moveT * -15.5 // vh
         const scale = 1 - moveT * 0.88
@@ -75,8 +75,10 @@ export default function HeroContent() {
       if (eyebrowRef.current) eyebrowRef.current.style.opacity = String(fadeFor(p, FADES.eyebrow))
       if (infoCardRef.current) infoCardRef.current.style.opacity = String(fadeFor(p, FADES.infoCard))
 
-      // Hides the whole layer once you're past the hero, so it can't
-      // block clicks/scroll or peek through on later sections.
+      // Hides the rest of the hero text once you're past the hero, so
+      // it can't block clicks/scroll or peek through on later
+      // sections. The wordmark is deliberately NOT in here — it stays
+      // visible permanently as the settled logo.
       if (wrapRef.current) {
         wrapRef.current.style.visibility = isHero ? 'visible' : 'hidden'
       }
@@ -88,35 +90,39 @@ export default function HeroContent() {
   }, [])
 
   return (
-    <div className="hero-content" ref={wrapRef}>
-      <div className="eyebrow-top" ref={eyebrowRef}>SUSTAINABLE &amp; AFFORDABLE ENERGY FOR LIFE</div>
-
+    <>
+      {/* Permanent — never hidden, unlike the wrapper below. Settles
+          into place and just stays there as the site's logo. */}
       <h1 className="hero-wordmark" ref={wordmarkRef}>{BRAND_NAME}</h1>
 
-      <p className="hero-tagline" ref={taglineRef}>
-        Designed to track, measure, and act — {BRAND_NAME} makes
-        sustainability feel considered, not complicated.
-      </p>
+      <div className="hero-content" ref={wrapRef}>
+        <div className="eyebrow-top" ref={eyebrowRef}>SUSTAINABLE &amp; AFFORDABLE ENERGY FOR LIFE</div>
 
-      <div className="info-card" ref={infoCardRef}>
-        <p className="info-card__title">
-          DESIGNED WITH PURPOSE,
-          <br />
-          BY A TEAM THAT CARES.
+        <p className="hero-tagline" ref={taglineRef}>
+          Designed to track, measure, and act — {BRAND_NAME} makes
+          sustainability feel considered, not complicated.
         </p>
-        <hr />
-        <p className="info-card__body">
-          The world's most necessary
-          <br />
-          commitment to a livable planet.
-        </p>
-      </div>
 
-      <div className="scroll-cue" ref={scrollCueRef}>
-        <span className="scroll-cue__ring" />
-        <span className="scroll-cue__chevron">⌄</span>
-        SCROLL TO CONTINUE
+        <div className="info-card" ref={infoCardRef}>
+          <p className="info-card__title">
+            DESIGNED WITH PURPOSE,
+            <br />
+            BY A TEAM THAT CARES.
+          </p>
+          <hr />
+          <p className="info-card__body">
+            The world's most necessary
+            <br />
+            commitment to a livable planet.
+          </p>
+        </div>
+
+        <div className="scroll-cue" ref={scrollCueRef}>
+          <span className="scroll-cue__ring" />
+          <span className="scroll-cue__chevron">⌄</span>
+          SCROLL TO CONTINUE
+        </div>
       </div>
-    </div>
+    </>
   )
 }
