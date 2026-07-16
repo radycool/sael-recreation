@@ -34,14 +34,17 @@ export default function App() {
             key={key}
             onClick={() => setActiveModel(key)}
             style={{
-              padding: '10px 16px',
+              padding: '8px 18px',
               borderRadius: 999,
               border: '1px solid rgba(255,255,255,0.2)',
               background: activeModel === key ? 'var(--accent)' : 'rgba(0,0,0,0.4)',
               color: 'var(--fg)',
               fontSize: 'var(--btn)',
+              lineHeight: 1.2,
               cursor: 'pointer',
               backdropFilter: 'blur(6px)',
+              transition: 'background 0.2s ease',
+              whiteSpace: 'nowrap',
             }}
           >
             {MODELS[key].label}

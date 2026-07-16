@@ -1,21 +1,25 @@
 /*
   Fluid type / spacing tokens — same technique seen in Oryzo's devtools
   (--h1, --screen-unit, calc()-based scaling).
-  We'll refine these exact numbers in Step 2.
 */
 :root {
-  --screen-unit: calc(1vw / 3.75);
+  /*
+    clamp(MIN, PREFERRED, MAX):
+    - below a small screen, size locks to MIN
+    - above a large screen, size locks to MAX
+    - in between, it scales smoothly with viewport width (the "vw" term)
+    This is what stops text/buttons from ballooning on wide desktop screens.
+  */
+  --h1: clamp(2.25rem, 1.2rem + 3.5vw, 4.5rem);
+  --h2: clamp(1.5rem, 1rem + 2vw, 2.75rem);
+  --h3: clamp(1.25rem, 0.9rem + 1.2vw, 2rem);
+  --h4: clamp(1.1rem, 0.9rem + 0.6vw, 1.5rem);
+  --h5: clamp(1rem, 0.85rem + 0.4vw, 1.25rem);
 
-  --h1: calc(48 * var(--screen-unit));
-  --h2: calc(28 * var(--screen-unit));
-  --h3: calc(22 * var(--screen-unit));
-  --h4: calc(16 * var(--screen-unit));
-  --h5: calc(14 * var(--screen-unit));
-
-  --body1: calc(18 * var(--screen-unit));
-  --body2: calc(16 * var(--screen-unit));
-  --body3: calc(14 * var(--screen-unit));
-  --btn:   calc(10 * var(--screen-unit));
+  --body1: clamp(1.05rem, 0.9rem + 0.5vw, 1.25rem);
+  --body2: clamp(0.95rem, 0.85rem + 0.4vw, 1.1rem);
+  --body3: clamp(0.85rem, 0.78rem + 0.3vw, 0.95rem);
+  --btn:   clamp(0.8rem, 0.75rem + 0.2vw, 0.9rem);
 
   --bg: #0b0b0d;
   --fg: #f4f2ee;
