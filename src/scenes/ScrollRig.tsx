@@ -30,7 +30,6 @@ const FEATURE_GROW_TO = HERO_GROW_TO * 1.2
 // same window the hand takes to arrive (HAND_ENTER_END, from
 // HandRig.tsx), then holds — continuous from BASE_SCALE, no jump.
 const HAND_HOLD_SCALE = 0.5
-const HAND_HOLD_POS_Y = -0.4 // right down at the hand, not up near the heading
 
 export default function ScrollRig({ children }: { children: ReactNode }) {
   const group = useRef<Group>(null)
@@ -84,12 +83,14 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
         group.current.rotation.x = ((holdT - 0.5) / 0.5) * Math.PI
       }
     } else if (activeSection === 2) {
-      // Continuous from BASE_SCALE (where section 1 left off) down to
-      // the smaller "held in hand" size, over the same window the
-      // hand takes to arrive — then just holds.
+      // Position stays exactly where it already was — the earth is
+      // mid-continuous-scroll from the previous section and shouldn't
+      // reposition itself. Only scale continues shrinking, gradually,
+      // over the same (now much longer) window the hand takes to
+      // arrive — the hand rises to meet the earth, not vice versa.
       const t = Math.min(Math.max(p / HAND_ENTER_END, 0), 1)
       group.current.scale.setScalar(BASE_SCALE + t * (HAND_HOLD_SCALE - BASE_SCALE))
-      group.current.position.y = BASE_POS_Y + t * (HAND_HOLD_POS_Y - BASE_POS_Y)
+      group.current.position.y = BASE_POS_Y
       group.current.rotation.y = 0
       group.current.rotation.x = 0
     } else {

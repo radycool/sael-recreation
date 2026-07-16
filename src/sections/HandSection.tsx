@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react'
 import { scrollState } from '../state/scrollState'
-import { HAND_ENTER_END, HAND_HOLD_END } from '../scenes/HandRig'
+import { HAND_HOLD_END } from '../scenes/HandRig'
 import { BRAND_NAME } from '../components/Nav'
+
+// The heading resolves from "smoke" much faster than the hand takes
+// to actually arrive (HandRig's HAND_ENTER_END is 0.7) — by the time
+// the hand is still reaching, the text is already fully sharp.
+const HEADING_RESOLVE_END = 0.3
 
 export default function HandSection() {
   const headingRef = useRef<HTMLDivElement>(null)
@@ -15,8 +20,8 @@ export default function HandSection() {
       const p = isThis ? scrollState.sectionProgress : 0
 
       let t: number // 0 = smoke/invisible, 1 = fully resolved
-      if (p < HAND_ENTER_END) {
-        t = Math.min(Math.max(p / HAND_ENTER_END, 0), 1)
+      if (p < HEADING_RESOLVE_END) {
+        t = Math.min(Math.max(p / HEADING_RESOLVE_END, 0), 1)
       } else if (p < HAND_HOLD_END) {
         t = 1
       } else {

@@ -3,24 +3,24 @@ import { useFrame } from '@react-three/fiber'
 import { Group } from 'three'
 import { scrollState } from '../state/scrollState'
 
-// Must match HandSection.tsx's own timing exactly — text visibility
-// and the hand's reach/settle/exit are two separate systems reading
-// the same scrollState progress, so they need identical windows.
-export const HAND_ENTER_END = 0.2
-export const HAND_HOLD_END = 0.8
+// Text resolves much earlier than the hand arrives — these are
+// DELIBERATELY different windows now (see HandSection.tsx, which
+// uses its own faster HEADING_RESOLVE_END, not this constant).
+// The hand takes most of the section to actually reach the earth.
+export const HAND_ENTER_END = 0.7
+export const HAND_HOLD_END = 0.85
 
-// Resting position once settled — right up against where the earth
-// ends up (see ScrollRig's hand-hold branch), so the earth actually
-// reads as resting on the fingers, not floating a full unit above them.
-const SETTLED_POS: [number, number, number] = [0, -0.72, 0.3]
-const START_POS: [number, number, number] = [0, -3.2, 0.1]
+// Resting position once settled — the earth itself no longer moves
+// during this section (it stays exactly where the previous section
+// left it, at ScrollRig's BASE_POS_Y ≈ -0.15), so the hand has to
+// rise all the way up to meet IT, not the other way around.
+const SETTLED_POS: [number, number, number] = [0.05, -0.32, 0.25]
+const START_POS: [number, number, number] = [0, -3.4, 0.1]
 
-// Rotation reaches in at an angle, then levels out into a much more
-// neutral, mostly-upright "presenting" pose once settled — the
-// earlier values were tilting/rotating it enough to read as reaching
-// or grasping away from the object instead of holding it underneath.
-const START_ROT: [number, number, number] = [0.55, -0.1, -0.25]
-const SETTLED_ROT: [number, number, number] = [0.12, 0, -0.04]
+// Rotation reaches in fingers-first at a steep diagonal angle, then
+// levels out into a neutral cupped "holding" pose once settled.
+const START_ROT: [number, number, number] = [0.75, -0.2, -0.55]
+const SETTLED_ROT: [number, number, number] = [0.15, 0, -0.15]
 
 function lerp(a: number, b: number, t: number) {
   return a + (b - a) * t
