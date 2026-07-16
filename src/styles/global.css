@@ -191,7 +191,13 @@ html, body, #root {
   position: fixed;
   inset: 0;
   z-index: 0;
-  background-image: url('/images/hero-bg.jpg');
+  /* Stacked backgrounds: gradient overlay first (paints on top),
+     photo underneath. Gradient stays fully transparent through the
+     left ~38% (wordmark/card territory — already dark enough) and
+     only darkens further right, for tagline/nav contrast. */
+  background-image:
+    linear-gradient(100deg, transparent 0%, transparent 38%, rgba(10, 8, 6, 0.32) 100%),
+    url('/images/hero-bg.jpg');
   background-size: cover;
   background-position: center;
   transition: opacity 0.1s linear;
@@ -303,7 +309,7 @@ html, body, #root {
   text-shadow: 0 2px 16px rgba(0, 0, 0, 0.2);
 }
 
-.hero-tagline {
+.hero .hero-tagline {
   position: absolute;
   z-index: 1;
   right: 6vw;
@@ -329,42 +335,41 @@ html, body, #root {
   position: absolute;
   z-index: 1;
   left: 4vw;
-  bottom: 12vh;
+  bottom: 8vh; /* pushed down from 12vh for more gap under the wordmark */
   max-width: 30ch;
-  /* Warm-toned glass (matches the wood backdrop) instead of a
-     neutral white panel — closer to the ref's card. */
-  background: linear-gradient(160deg, rgba(58, 42, 30, 0.55), rgba(58, 42, 30, 0.28));
-  backdrop-filter: blur(18px) saturate(130%);
-  -webkit-backdrop-filter: blur(18px) saturate(130%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-  padding: 28px;
+  /* Lighter, more translucent glass — was reading as near-black.
+     Wood tone still comes through, just much airier. */
+  background: linear-gradient(160deg, rgba(120, 95, 68, 0.32), rgba(120, 95, 68, 0.14));
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  padding: 24px 28px;
   border-radius: 6px;
 }
 
-.info-card__title {
+.info-card .info-card__title {
   font-size: var(--h5);
   font-weight: 700;
   letter-spacing: 0.02em;
   text-transform: uppercase;
+  line-height: 1.25;
   color: var(--fg);
-  margin-bottom: 14px;
+  margin-bottom: 6px; /* tight to the rule, like the ref */
 }
 
 .info-card hr {
   border: none;
   border-top: 1px dashed rgba(244, 242, 238, 0.35);
-  margin: 16px 0;
+  margin: 12px 0;
 }
 
-.info-card__body {
+.info-card .info-card__body {
   font-size: var(--body3);
   color: var(--fg);
   opacity: 0.9;
-  line-height: 1.5;
+  line-height: 1.35;
   text-align: right;
-  font-style: italic;
-  font-family: Georgia, 'Times New Roman', serif;
 }
 
 .scroll-cue {
