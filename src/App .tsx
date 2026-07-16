@@ -1,6 +1,7 @@
 import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
 import Hero from './sections/Hero'
+import FeatureSection from './sections/FeatureSection'
 import LoadingScreen from './components/LoadingScreen'
 import HeroBackground from './components/HeroBackground'
 import HeroContent from './components/HeroContent'
@@ -35,6 +36,8 @@ export default function App() {
         {/* Empty spacer — just gives ScrollTrigger real height to
             measure the hero's scroll progress against */}
         <Hero />
+
+        <FeatureSection />
       </div>
     </main>
   )
