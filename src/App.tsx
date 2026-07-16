@@ -2,7 +2,8 @@ import { useScrollSync } from './hooks/useScrollSync'
 import Scene from './scenes/Scene'
 import Hero from './sections/Hero'
 import FeatureSection from './sections/FeatureSection'
-import HandSection from './sections/HandSection'
+import PortableSection from './sections/PortableSection'
+// import HandSection from './sections/HandSection' // hand section on hold for now
 import LoadingScreen from './components/LoadingScreen'
 import HeroBackground from './components/HeroBackground'
 import HeroContent from './components/HeroContent'
@@ -20,7 +21,7 @@ export default function App() {
       <HeroBackground />
 
       {/* Fixed 3D layer — stays in place, reacts to scroll */}
-      <Scene modelPath="/models/earth-model.glb" />
+      <Scene modelPath="/models/earth-model.glb" secondaryModelPath="/models/earthquakes-2000-2019.glb" />
 
       {/* Fixed hero text layer — driven entirely by scrollState, not
           by native document scroll (see HeroContent.tsx) */}
@@ -40,7 +41,9 @@ export default function App() {
 
         <FeatureSection />
 
-        <HandSection />
+        <PortableSection />
+
+        {/* <HandSection /> — hand section on hold for now */}
       </div>
     </main>
   )

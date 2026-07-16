@@ -1,8 +1,8 @@
-import { useRef, type ReactNode } from 'react'
+import { useRef } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
 import { Group } from 'three'
 import { scrollState } from '../state/scrollState'
-import { HAND_ENTER_END } from './HandRig'
+import EarthModel from './EarthModel'
 
 const BASE_SCALE = 0.95
 const BASE_CAM_Z = 5
@@ -26,13 +26,34 @@ const FEATURE_HOLD_END = 0.75
 const FEATURE_SETTLE_END = 0.95
 const FEATURE_GROW_TO = HERO_GROW_TO * 1.2
 
-// Section 2 (hand): earth shrinks down to "fit in the hand" over the
-// same window the hand takes to arrive (HAND_ENTER_END, from
-// HandRig.tsx), then holds — continuous from BASE_SCALE, no jump.
-const HAND_HOLD_SCALE = 0.5
+// Section 2 ("So portable, it's wearable" / outline-morph section):
+// three partial rotations — outline morph, heading arrival, then a
+// model-swap spin — followed by a dramatic scale-up finale so it
+// feels like the camera is diving in. Must match PortableSection.tsx's
+// own timing exactly.
+export const PORTABLE_OUTLINE_END = 0.25 // circle -> square completes
+export const PORTABLE_HEADING_START = 0.3
+export const PORTABLE_HEADING_END = 0.55 // big heading fully arrived
+export const PORTABLE_SWAP_END = 0.65 // model-swap spin + crossfade completes
+export const PORTABLE_SHINE_END = 0.65 // text "shine" finishes (same point)
+export const PORTABLE_GROW_START = 0.65
+const PORTABLE_ROT1_DEG = 70
+const PORTABLE_ROT2_DEG = 70
+const PORTABLE_SWAP_ROT_DEG = 90
+const PORTABLE_GROW_TO = 14 // huge — "feel like we're inside it"
 
-export default function ScrollRig({ children }: { children: ReactNode }) {
+// NOTE: if HandSection.tsx is re-enabled later, this becomes section
+// 3 and the hand-hold branch (removed here) needs restoring above.
+
+type ScrollRigProps = {
+  primaryModelPath: string
+  secondaryModelPath: string
+}
+
+export default function ScrollRig({ primaryModelPath, secondaryModelPath }: ScrollRigProps) {
   const group = useRef<Group>(null)
+  const primaryRef = useRef<Group>(null)
+  const secondaryRef = useRef<Group>(null)
   const { camera } = useThree()
 
   useFrame(() => {
@@ -41,6 +62,11 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
     const { activeSection, sectionProgress: p } = scrollState
 
     camera.position.z = BASE_CAM_Z
+
+    // Default: only the primary model shown, secondary hidden. Section
+    // 2 overrides this during its swap window (see below).
+    if (primaryRef.current) primaryRef.current.scale.setScalar(1)
+    if (secondaryRef.current) secondaryRef.current.scale.setScalar(0)
 
     if (activeSection === 0) {
       // Hero: no spin, but scales up as you scroll through it — this
@@ -83,16 +109,52 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
         group.current.rotation.x = ((holdT - 0.5) / 0.5) * Math.PI
       }
     } else if (activeSection === 2) {
-      // Position stays exactly where it already was — the earth is
-      // mid-continuous-scroll from the previous section and shouldn't
-      // reposition itself. Only scale continues shrinking, gradually,
-      // over the same (now much longer) window the hand takes to
-      // arrive — the hand rises to meet the earth, not vice versa.
-      const t = Math.min(Math.max(p / HAND_ENTER_END, 0), 1)
-      group.current.scale.setScalar(BASE_SCALE + t * (HAND_HOLD_SCALE - BASE_SCALE))
       group.current.position.y = BASE_POS_Y
-      group.current.rotation.y = 0
+
+      // Rotation: partial turn during the outline morph, holds,
+      // partial turn during the heading's arrival, holds, partial
+      // "swap spin" while the model crossfades, then keeps slowly
+      // turning through the final zoom-in for a "diving in" feel.
+      const deg2rad = Math.PI / 180
+      let rotDeg: number
+      if (p < PORTABLE_OUTLINE_END) {
+        rotDeg = (p / PORTABLE_OUTLINE_END) * PORTABLE_ROT1_DEG
+      } else if (p < PORTABLE_HEADING_START) {
+        rotDeg = PORTABLE_ROT1_DEG
+      } else if (p < PORTABLE_HEADING_END) {
+        const t = (p - PORTABLE_HEADING_START) / (PORTABLE_HEADING_END - PORTABLE_HEADING_START)
+        rotDeg = PORTABLE_ROT1_DEG + t * PORTABLE_ROT2_DEG
+      } else if (p < PORTABLE_SWAP_END) {
+        const t = (p - PORTABLE_HEADING_END) / (PORTABLE_SWAP_END - PORTABLE_HEADING_END)
+        rotDeg = PORTABLE_ROT1_DEG + PORTABLE_ROT2_DEG + t * PORTABLE_SWAP_ROT_DEG
+      } else {
+        const t = (p - PORTABLE_GROW_START) / (1 - PORTABLE_GROW_START)
+        rotDeg = PORTABLE_ROT1_DEG + PORTABLE_ROT2_DEG + PORTABLE_SWAP_ROT_DEG + t * 180
+      }
+      group.current.rotation.y = rotDeg * deg2rad
       group.current.rotation.x = 0
+
+      // Model crossfade — happens WHILE the swap-spin plays, so the
+      // earth is mid-turn when it changes rather than popping while
+      // static. Primary shrinks to 0, secondary grows to 1, same t.
+      if (p >= PORTABLE_HEADING_END && p < PORTABLE_SWAP_END) {
+        const t = (p - PORTABLE_HEADING_END) / (PORTABLE_SWAP_END - PORTABLE_HEADING_END)
+        if (primaryRef.current) primaryRef.current.scale.setScalar(1 - t)
+        if (secondaryRef.current) secondaryRef.current.scale.setScalar(t)
+      } else if (p >= PORTABLE_SWAP_END) {
+        if (primaryRef.current) primaryRef.current.scale.setScalar(0)
+        if (secondaryRef.current) secondaryRef.current.scale.setScalar(1)
+      }
+
+      // Scale: flat until the grow phase, then ramps up hard (eased
+      // in) into an oversized, screen-filling finale.
+      if (p < PORTABLE_GROW_START) {
+        group.current.scale.setScalar(BASE_SCALE)
+      } else {
+        const t = Math.min(Math.max((p - PORTABLE_GROW_START) / (1 - PORTABLE_GROW_START), 0), 1)
+        const eased = t * t // ease-in — starts slow, accelerates
+        group.current.scale.setScalar(BASE_SCALE + eased * (PORTABLE_GROW_TO - BASE_SCALE))
+      }
     } else {
       group.current.position.y = BASE_POS_Y
       group.current.scale.setScalar(BASE_SCALE)
@@ -101,5 +163,14 @@ export default function ScrollRig({ children }: { children: ReactNode }) {
     }
   })
 
-  return <group ref={group}>{children}</group>
+  return (
+    <group ref={group}>
+      <group ref={primaryRef}>
+        <EarthModel path={primaryModelPath} scale={1} />
+      </group>
+      <group ref={secondaryRef}>
+        <EarthModel path={secondaryModelPath} scale={1} />
+      </group>
+    </group>
+  )
 }

@@ -1,15 +1,15 @@
 import { Canvas } from '@react-three/fiber'
 import { Environment } from '@react-three/drei'
 import { Suspense } from 'react'
-import EarthModel from './EarthModel'
 import ScrollRig from './ScrollRig'
-import HandRig from './HandRig'
+// import HandRig from './HandRig' // hand section on hold for now
 
 type SceneProps = {
   modelPath: string
+  secondaryModelPath: string
 }
 
-export default function Scene({ modelPath }: SceneProps) {
+export default function Scene({ modelPath, secondaryModelPath }: SceneProps) {
   return (
     <Canvas
       camera={{ position: [0, 0, 6], fov: 35 }}
@@ -22,10 +22,8 @@ export default function Scene({ modelPath }: SceneProps) {
       <Environment preset="city" />
 
       <Suspense fallback={null}>
-        <ScrollRig>
-          <EarthModel path={modelPath} scale={1} />
-        </ScrollRig>
-        <HandRig />
+        <ScrollRig primaryModelPath={modelPath} secondaryModelPath={secondaryModelPath} />
+        {/* <HandRig /> — hand section on hold for now */}
       </Suspense>
     </Canvas>
   )
