@@ -11,6 +11,23 @@ const FADE_END = 0.7
 
 export default function Hero() {
   const wordmarkRef = useRef<HTMLHeadingElement>(null)
+  const eyebrowRef = useRef<HTMLDivElement>(null)
+
+  // Pins the eyebrow's right edge to the wordmark's actual rendered
+  // right edge — measured directly rather than guessed, since "SAEL"
+  // and "ORYZO" render at very different widths and a fixed vw offset
+  // would only line up by coincidence.
+  useEffect(() => {
+    const align = () => {
+      if (wordmarkRef.current && eyebrowRef.current) {
+        const rect = wordmarkRef.current.getBoundingClientRect()
+        eyebrowRef.current.style.right = `${window.innerWidth - rect.right}px`
+      }
+    }
+    align()
+    window.addEventListener('resize', align)
+    return () => window.removeEventListener('resize', align)
+  }, [])
 
   useEffect(() => {
     let raf: number
@@ -41,7 +58,7 @@ export default function Hero() {
 
   return (
     <section className="hero section">
-      <div className="eyebrow-top">SUSTAINABLE &amp; AFFORDABLE ENERGY FOR LIFE</div>
+      <div className="eyebrow-top" ref={eyebrowRef}>SUSTAINABLE &amp; AFFORDABLE ENERGY FOR LIFE</div>
 
       <h1 className="hero-wordmark" ref={wordmarkRef}>{BRAND_NAME}</h1>
 
@@ -58,12 +75,14 @@ export default function Hero() {
         </p>
         <hr />
         <p className="info-card__body">
-          Replace this with your real founder/brand story —
-          same spot as Oryzo's "Designed by Lusion" card.
+          The world's most necessary
+          <br />
+          commitment to a livable planet.
         </p>
       </div>
 
       <div className="scroll-cue">
+        <span className="scroll-cue__ring" />
         <span className="scroll-cue__chevron">⌄</span>
         SCROLL TO CONTINUE
       </div>

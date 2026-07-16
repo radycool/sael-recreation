@@ -5,6 +5,7 @@ import Hero from './sections/Hero'
 import LoadingScreen from './components/LoadingScreen'
 import HeroBackground from './components/HeroBackground'
 import Nav from './components/Nav'
+import PromoVideo from './components/PromoVideo'
 
 export default function App() {
   useScrollSync()
@@ -21,6 +22,9 @@ export default function App() {
 
       {/* Nav bar + vertical side label — always on top */}
       <Nav />
+
+      {/* Bottom-right video widget — hover grows it, click plays it */}
+      <PromoVideo />
 
       {/* Scrollable content layer */}
       <div id="content">

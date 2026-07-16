@@ -5,7 +5,7 @@ import { scrollState, getSpinPhase } from '../state/scrollState'
 
 // Constant across every section now — the model no longer grows or
 // shrinks as you scroll. Only rotation changes.
-const BASE_SCALE = 0.85
+const BASE_SCALE = 0.95
 const BASE_CAM_Z = 5
 const BASE_POS_Y = -0.15
 
